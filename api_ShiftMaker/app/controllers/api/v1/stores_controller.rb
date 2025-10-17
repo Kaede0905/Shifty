@@ -1,0 +1,92 @@
+module Api
+  module V1
+    class StoresController < ApplicationController
+      def employee_create
+        mode = employee_store_params[:mode]
+        if mode == "withId"
+          store = Store.find_by(invite_code: employee_store_params[:publicId])
+          if store
+            made_store = EmployeeStoreAssignment.find_by(store_id: store.id, employee_account_id: session[:id])
+            if made_store
+              render json: { 
+                errors: ["すでに店舗を作成しています"], 
+                error_type: "with_id" 
+              }, status: :unprocessable_entity
+            else
+              employee_store_assignment = EmployeeStoreAssignment.new(
+                employee_account_id: session[:id],
+                store_id: store.id
+              )
+              if employee_store_assignment.save
+                render json: { message: ["#{store.name}を作成しました"]}, status: :ok
+              else
+                render json: { 
+                  errors: employee_store_assignment.errors.full_messages, 
+                  error_type: "with_id" 
+                }, status: :unprocessable_entity
+              end
+            end
+          else
+            render json: { 
+              errors: ["店舗公開IDが存在しないか、間違っています"], 
+              error_type: "with_id" 
+            }, status: :unprocessable_entity
+          end
+        else
+          store_name = employee_store_params[:name]
+          store = Store.new(name: store_name, store_type: "without_id")
+          if store.save
+            employee_store_assignment = EmployeeStoreAssignment.new(
+              employee_account_id: session[:id],
+              store_id: store.id
+            )
+            if employee_store_assignment.save
+              render json: { message: ["#{store.name}を作成しました"]}, status: :ok
+            else
+              render json: { 
+                errors: employee_store_assignment.errors.full_messages, 
+                error_type: "without_id" 
+              }, status: :unprocessable_entity
+            end
+          else
+            render json: { 
+                errors: store.errors.full_messages, 
+                error_type: "without_id" 
+            }, status: :unprocessable_entity
+          end
+        end
+      end
+
+      def pull
+        if session[:userType] == "employer"
+          userId = session[:id]
+          user = EmployerAccount.find_by(id: userId)
+          company_id = user.company_id
+          stores = Store.where(company_id: company_id)
+        else
+          render json: { errors: ["雇用者アカウントではありません"] }, status: :unprocessable_entity
+          return
+        end
+        render json: { user: user, stores: stores }, status: :ok 
+      end
+
+      def employees
+        storeId = params["storeId"]
+        users = []
+        user_ids = []
+        user_assigns = EmployeeStoreAssignment.where(store_id: storeId)
+        user_assigns.each do |user_assign|
+          user_id = user_assign[:employee_account_id]
+          user = EmployeeAccount.find_by(id: user_id)
+          next unless user
+          users << user.as_json.merge(assign_id:user_assign.id , salary: user_assign.salary, night_salary: user_assign.night_salary, role: user_assign.role)
+        end
+        render json: { users: users }, status: :ok
+      end
+
+      def employee_store_params
+        params.require(:employer_store).permit(:mode, :publicId, :name)
+      end
+    end
+  end
+end
