@@ -13,6 +13,8 @@ import { StoreCalendarPage } from './pages/StoreCalendarPage'
 import StoreEmployee from './pages/StoreEmployee'
 import EmployerShiftEdit from './pages/EmployerShiftEdit'
 import EmployerShiftCalendar from './pages/EmployerShiftCalendar'
+import EmployeeShiftSituation from './pages/EmployeeShiftSituation'
+
 
 
 const AppRoute: React.FC = () => {
@@ -30,6 +32,7 @@ const AppRoute: React.FC = () => {
         <Route path="/store/:id/shift" element={<MakeEmployeeShift />} />
         <Route path="/store/:id/calendar" element={<StoreCalendarPage />} />
         <Route path="/store/:id/employee/detail" element={<StoreEmployee />} />
+        <Route path="/store/:id/employee/situation" element={<EmployeeShiftSituation />} />
         <Route path="/store/:id/shifts/calender" element={<EmployerShiftCalendar />} />
         <Route path="/store/:id/shifts/:date" element={<EmployerShiftEdit />} />
       </Routes>

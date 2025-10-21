@@ -13,7 +13,7 @@ class SessionsController < ApplicationController
         user = EmployeeAccount.new(
           line_uid: auth.uid,
           name: auth.info.name,
-          image_url: auth.info.image,
+          image_url: auth.info.image.present? ? auth.info.image : "https://ui-avatars.com/api/?name=#{auth.info.name}&background=random",
           password_digest: SecureRandom.hex(16)
         )
         if user.save
@@ -27,7 +27,6 @@ class SessionsController < ApplicationController
         end
       end
     end
-
     if mode == "login"
       user = EmployeeAccount.where(line_uid: auth.uid).first
       if user

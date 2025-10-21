@@ -3,8 +3,11 @@ module Api
     class EmployeeAccountsController < ApplicationController
 
       def create
-        user = EmployeeAccount.new(account_params)
-        
+        user = EmployeeAccount.new(
+          account_params.merge(
+            image_url: "https://ui-avatars.com/api/?name=#{account_params[:name]}&background=random"
+          )
+        )
         if user.save
           session[:id] = user.id
           session[:userType] = "employee"
@@ -21,9 +24,6 @@ module Api
             if user.authenticate(account_params[:password])
               session[:id] = user.id
               session[:userType] = "employee"
-              p 'ログイン'
-              p session[:userType]
-              p session[:id]
               render json: { message: "ログイン成功", userType: session[:userType] }, status: :ok
             else
               render json: { errors: "パスワードが一致しません" }, status: :unprocessable_entity
@@ -83,7 +83,6 @@ module Api
           night_salary: employeeData[:night_salary],
           role: employeeData[:role]
         )
-          p employee_store_assignment
           render json: { message: "アカウントを更新しました" }, status: :ok
         else
           render json: { errors: employee_store_assignment.errors.full_messages }, status: :unprocessable_entity

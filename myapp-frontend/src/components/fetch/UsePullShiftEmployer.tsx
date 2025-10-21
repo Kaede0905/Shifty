@@ -12,7 +12,7 @@ type Shift = {
   note: string | null;
 }
 
-export const UsePullShiftEmployer = (refetchFlag: number, id?: string) => {
+export const UsePullShiftEmployer = (refetchFlag?: number, id?: string) => {
   const API_URL = import.meta.env.VITE_API_URL
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

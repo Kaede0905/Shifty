@@ -10,7 +10,7 @@ interface EmployeeData {
   role: string;
 }
 
-export const UsePullstoreEmployee = (storeId: number, refetchFlag: number) => {
+export const UsePullstoreEmployee = (storeId: number, refetchFlag?: number) => {
   const [users, setUsers] = useState<EmployeeData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

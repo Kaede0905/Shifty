@@ -73,7 +73,6 @@ const HomeEmployer: React.FC = () => {
   const menus = [
     { title: "従業員確認", icon: <Users className="w-8 h-8 text-blue-600" />, path: `/store/${selectedStore?.id}/employee/detail` },
     { title: "従業員シフト提出状況", icon: <CalendarDays className="w-8 h-8 text-purple-600" />, path: `/store/${selectedStore?.id}/employee/situation` },
-    { title: "シフト確認", icon: <CalendarDays className="w-8 h-8 text-purple-600" />, path: `/store/${selectedStore?.id}/shifts/confirm`  },
     { title: "シフト編集", icon: <Edit className="w-8 h-8 text-green-600" />, path: `/store/${selectedStore?.id}/shifts/calender` },
   ];
 
