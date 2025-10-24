@@ -2,8 +2,7 @@ import { useState,useEffect} from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar, momentLocalizer } from "react-big-calendar";
-import { MessageCircle, LogOut, User, Settings } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion} from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/components/fetch/useAuth";
 import { usePullStoreInfo } from "@/components/fetch/usePullStoreInfo";
@@ -25,7 +24,6 @@ const HomeEmployee = () => {
     { title: "バイト（17:00〜21:00）", start: new Date(2025, 8, 18, 17, 0), end: new Date(2025, 8, 18, 21, 0) },
     { title: "シフト提出締切", start: new Date(2025, 8, 20, 0, 0), end: new Date(2025, 8, 20, 23, 59) },
   ];
-  const API_URL = import.meta.env.VITE_API_URL;
   const [isModalOpen, setModalOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const storeOnClick = ( Id: number ) => {
@@ -35,7 +33,7 @@ const HomeEmployee = () => {
     name: "ゲスト",
     image_url: "https://placehold.co/40x40/999999/FFFFFF?text=U",
   })
-  const { loading, authenticated, user } = useAuth();
+  const { loading, authenticated, user } = useAuth("user");
   const { stores } = usePullStoreInfo();
   useEffect (()=>{
     if(user){

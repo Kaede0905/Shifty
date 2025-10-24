@@ -18,7 +18,7 @@ type User = {
   role: string;
   image_url: string;
 }
-export const UsePullStoreEmployer = () => {
+export const UsePullStoreEmployer = (refetchFlag?:number) => {
   const API_URL = import.meta.env.VITE_API_URL
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -33,9 +33,8 @@ export const UsePullStoreEmployer = () => {
         })
         if (!res.ok) throw new Error("シフト情報の取得に失敗しました");
         const data = await res.json();
-        console.log(data.stores)
         setUser(data.user);
-        setStores(data.stores)
+        setStores(data.stores);
       }catch (e: any) {
         setError(e.message);
       }finally {
@@ -43,6 +42,6 @@ export const UsePullStoreEmployer = () => {
       }
     }
     fetchShifts();
-  },[])
+  },[refetchFlag])
   return { user, stores, loading, error }
 }

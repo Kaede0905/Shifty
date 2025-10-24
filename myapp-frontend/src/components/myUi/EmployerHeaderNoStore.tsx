@@ -4,7 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { UsePullStoreEmployer } from "../fetch/UsePullStoreEmployer";
 
-export const EmployerHeaderNoStore = () => {
+type Props = {
+  setUserMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export const EmployerHeaderNoStore = ({setUserMenuOpen}:Props) => {
   const { user } = UsePullStoreEmployer();
   const navigate = useNavigate();
   return (
@@ -17,6 +21,7 @@ export const EmployerHeaderNoStore = () => {
       <div className="flex items-center gap-3">
         <motion.button
           className="focus:outline-none"
+          onClick={()=>setUserMenuOpen(true)}
           whileHover={{ scale: 1.1, rotate: 5 }}
           whileTap={{ scale: 0.95 }}
         >

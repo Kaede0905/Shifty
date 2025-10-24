@@ -23,28 +23,28 @@ const StoreTop = () => {
     name: "ゲスト",
     image_url: "https://placehold.co/40x40/999999/FFFFFF?text=U",
   })
-  const { loading, authenticated, user } = useAuth();
-  useEffect (()=>{
-    if(user){
+  const storeId = Number(id);
+  const { loading, authenticated, user } = useAuth("store", storeId);
+  useEffect(() => {
+    if (authenticated && user) {
       setUserData({
-        name: user.name ?? "ゲスト",
-        image_url: user.image_url ?? "https://placehold.co/40x40/999999/FFFFFF?text=U",
-      })
+        name: user.name || "不明",
+        image_url: user.image_url || "https://placehold.co/40x40/999999/FFFFFF?text=U",
+      });
     }
-  },[user])
+  }, [authenticated, user]);
   if (loading) return <LoadingScreen />;
   if (!authenticated) return null;
-  const storeId = Number(id);
   const store = stores.find((s) => s.id === storeId);
   if (!store) return <h1>店舗が見つかりません</h1>;
-  const { deleteS } = DeleteStore(store.id);
-  
+  const { deleteS } = DeleteStore(user?.assign_id ?? 0);
   const handleDeleteStoreBotton = async() =>{ 
     const result = await openConfirm("店舗情報を消去しますか？",`${store.name}のすべての情報を消去します`);
     if (!result) return;
     const result2 = await openConfirm("本当に消去しますか？","消去すると二度と情報は戻りません");
     if (!result2) return;
     await deleteS();
+    navigate("/home/employee");
   }
   // 仮データ（APIで取得する想定）
   const plannedHours = 120; // 今月予定勤務時間
@@ -87,12 +87,13 @@ const StoreTop = () => {
                   )}
                 </div>
                 <p className="text-sm text-gray-600">
-                  時給: {store.hourly_wage ? `${store.hourly_wage}円` : "未設定"}
+                  時給: {user?.salary ? `${user.salary}円` : "未設定"}
                 </p>
               </div>
             </div>
             <p className="text-sm text-gray-600">住所: {store.address ?? "未登録"}</p>
             <p className="text-sm text-gray-600">電話番号: {store.phone_number ?? "未登録"}</p>
+            <p className="text-sm text-gray-600">役職: {user?.role ?? "未登録"}</p>
           </div>
 
           <div className="mt-4">

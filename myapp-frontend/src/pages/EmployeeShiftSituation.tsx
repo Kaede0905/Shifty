@@ -6,10 +6,12 @@ import { useParams, useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { UsePullstoreEmployee } from "@/components/fetch/UsePullStoreEmployee";
 import { EmployerHeaderNoStore } from "@/components/myUi/EmployerHeaderNoStore";
+import { EmployerUserMenu } from "@/components/myUi/EmployerUserMenu";
 
 const EmployeeShiftSituation = () => {
   const { id } = useParams<{ id: string }>();
   const [currentDate, setCurrentDate] = useState(dayjs());
+  const [menuUserMenuOpen, setUserMenuOpen] = useState(false);
   const navigate = useNavigate();
   const currentMonth = currentDate.month() + 1;
   const currentYear = currentDate.year();
@@ -47,8 +49,13 @@ const EmployeeShiftSituation = () => {
 
   return (
     <>
-   
-    <EmployerHeaderNoStore />
+    <EmployerHeaderNoStore 
+      setUserMenuOpen={setUserMenuOpen}
+    />
+    <EmployerUserMenu 
+      menuOpen={menuUserMenuOpen}
+      setMenuOpen={setUserMenuOpen}
+    />
     <div className="p-4 overflow-x-auto">
       {/* ==== 月切り替えヘッダー ==== */}
       <div className="flex justify-center items-center gap-4 mb-4 sticky top-0 bg-white z-20 py-2">

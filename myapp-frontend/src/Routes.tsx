@@ -14,7 +14,9 @@ import StoreEmployee from './pages/StoreEmployee'
 import EmployerShiftEdit from './pages/EmployerShiftEdit'
 import EmployerShiftCalendar from './pages/EmployerShiftCalendar'
 import EmployeeShiftSituation from './pages/EmployeeShiftSituation'
-
+import CompanyCreate from './pages/CompanyCreate'
+import CompanyDetail from './pages/CompanyDetail'
+import CompanyInfo from './pages/CompanyInfo'
 
 
 const AppRoute: React.FC = () => {
@@ -24,6 +26,9 @@ const AppRoute: React.FC = () => {
         <Route path="/" element={<Top />} />
         <Route path="/signin" element={<MakeAccount />} />
         <Route path="/signin/employee/email" element={<MakeAccountEmployee />} />
+        <Route path="/signin/company" element={< CompanyCreate />} />
+        <Route path="/companies/:id" element={<CompanyDetail />} />
+        <Route path="/companies/info/:id" element={<CompanyInfo />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signin/employer" element={<MakeAccountEmployer />} />
         <Route path="/home/employee" element={<HomeEmployee />} />

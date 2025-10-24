@@ -3,11 +3,13 @@ import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import { EmployerHeaderNoStore } from "@/components/myUi/EmployerHeaderNoStore"
 import { useParams } from "react-router-dom";
+import { EmployerUserMenu } from "@/components/myUi/EmployerUserMenu";
 
 const EmployerShiftCalendar = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [currentMonth, setCurrentMonth] = useState(dayjs());
+  const [menuUserMenuOpen, setUserMenuOpen] = useState(false);
 
   // 月の日付リストを生成
   const startOfMonth = currentMonth.startOf("month");
@@ -24,7 +26,13 @@ const EmployerShiftCalendar = () => {
 
   return (
     <>
-      <EmployerHeaderNoStore />
+      <EmployerHeaderNoStore 
+        setUserMenuOpen={setUserMenuOpen}
+      />
+      <EmployerUserMenu 
+        menuOpen={menuUserMenuOpen}
+        setMenuOpen={setUserMenuOpen}
+      />
       <div className="p-6">
         {/* 月切り替え */}
         <div className="flex justify-between items-center mb-4">

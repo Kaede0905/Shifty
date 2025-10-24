@@ -1,7 +1,7 @@
 // StoreModal.tsx
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Search, Store, Edit } from "lucide-react";
+import { X, Search, Store, Edit, Plus } from "lucide-react";
 
 type Store = {
   id: number;
@@ -12,13 +12,13 @@ type Store = {
 interface StoreModalProps {
   openStoreModal: boolean;
   setStoreModal: React.Dispatch<React.SetStateAction<boolean>>;
+  setCreateModal: React.Dispatch<React.SetStateAction<boolean>>;
   stores: Store[];
   onSelect: (store: Store) => void;
 }
 
-const StoreModal: React.FC<StoreModalProps> = ({ openStoreModal, setStoreModal, stores, onSelect }) => {
+const StoreModal: React.FC<StoreModalProps> = ({ openStoreModal, setStoreModal, setCreateModal, stores, onSelect }) => {
   const [query, setQuery] = useState("");
-
   const filteredStores = stores.filter((store) =>
     store.name.toLowerCase().includes(query.toLowerCase())
   );
@@ -39,16 +39,31 @@ const StoreModal: React.FC<StoreModalProps> = ({ openStoreModal, setStoreModal, 
             exit={{ scale: 0.9, y: 30, opacity: 0 }}
             transition={{ type: "spring", stiffness: 200, damping: 20 }}
           >
-            {/* ヘッダー */}
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">店舗を選択・編集</h2>
+              {/* 左側：タイトル＋追加ボタン */}
+              <div className="flex items-center gap-3">
+                <h2 className="text-xl font-bold">店舗を選択・編集</h2>
+                <button
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-green-500 text-white rounded-full hover:bg-green-600 transition shadow-sm"
+                  onClick={()=>{
+                    setStoreModal(false);
+                    setCreateModal(true);
+                  }}
+                >
+                  <Plus className="w-4 h-4" />
+                  <span className="text-sm font-medium">追加</span>
+                </button>
+              </div>
+
+              {/* 右側：閉じるボタン */}
               <button
-                onClick={()=>setStoreModal(false)}
+                onClick={() => setStoreModal(false)}
                 className="p-2 rounded-full hover:bg-gray-100"
               >
                 <X className="w-6 h-6" />
               </button>
             </div>
+
 
             {/* 検索バー */}
             <div className="flex items-center gap-2 mb-4 border rounded-lg px-3 py-2">

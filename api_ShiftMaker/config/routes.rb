@@ -30,6 +30,8 @@ Rails.application.routes.draw do
       post '/stores/employee_create', to: 'stores#employee_create'
       get "/stores/pull", to: "stores#pull"
       get "/stores/:id/employees", to: "stores#employees"
+      post "/stores/create", "stores#create"
+      get "/stores/delete", to:"stores#delete"
 
       # シフト
       post "/shift", to: "shift#create"
@@ -41,6 +43,9 @@ Rails.application.routes.draw do
       post "/shift/delete", to: "shift#delete"
       post "/shift/employer/confirm", to: "shift#employer_comfirm"
       post "/shift/employer/delete", to: "shift#employer_delete"
+
+      # 会社アカウント
+      resources :companies
       
     end
   end

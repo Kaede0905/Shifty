@@ -1,12 +1,16 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-type Employee = {
+interface Employee {
   id: number;
+  assign_id: number;
   name: string;
   image_url?: string;
-};
-export const useAuth = () => {
+  salary?: number;
+  night_salary?: number;
+  role?: string;
+}
+export const useAuth = (type:string, storeId?: number) => {
 
   const API_URL = import.meta.env.VITE_API_URL;
   const [loading, setLoading] = useState(true);
@@ -17,11 +21,10 @@ export const useAuth = () => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await fetch(`${API_URL}/api/v1/employee/authenticated`, {
+        const res = await fetch(`${API_URL}/api/v1/employee/authenticated?type=${type}&storeId=${storeId}`, {
           credentials: "include"
         });
         const data = await res.json();
-
         if (res.ok && data.authenticated) {
           setAuthenticated(true);
           setUser(data.user); // ユーザー情報を保存
@@ -36,7 +39,7 @@ export const useAuth = () => {
       }
     };
     checkAuth();
-  }, [API_URL, navigate]);
+  }, [API_URL, navigate, storeId]);
 
   return { loading, authenticated, user };
 };

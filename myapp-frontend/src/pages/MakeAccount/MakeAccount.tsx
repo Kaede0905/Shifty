@@ -87,12 +87,22 @@ export default function SelectAccountType() {
         transition={{ duration: 0.8, delay: 0.4 }}
       >
         <Button
-          size="lg"
-          className="w-full shadow hover:scale-105 transition-transform"
-          onClick={() => navigate("/login")}
-        >
-          既にアカウントをお持ちの方はこちら
-        </Button>
+        size="lg"
+        className="w-full shadow-md bg-primary text-white hover:bg-primary/90 hover:scale-[1.02] transition-all"
+        onClick={() => navigate("/login")}
+      >
+        既にアカウントをお持ちの方はこちら
+      </Button>
+
+      <Button
+        size="lg"
+        variant="outline"
+        className="w-full shadow-sm hover:bg-gray-100 hover:scale-[1.02] transition-all"
+        onClick={() => navigate("/signin/company")}
+      >
+        会社アカウントを作成（デバック用）
+      </Button>
+
       </motion.div>
 
       {/* 被雇用者用モーダル */}

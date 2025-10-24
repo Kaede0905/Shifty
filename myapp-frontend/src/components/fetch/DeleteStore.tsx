@@ -1,20 +1,18 @@
 import { toast } from "sonner";
 
-export const DeleteStore = (store_id: number) => {
+export const DeleteStore = (assign_id: number) => {
   const API_URL = import.meta.env.VITE_API_URL;
   const deleteS = async () => {
     try {
-      const res = await fetch(`${API_URL}/api/v1/shift/delete`, {
-        method: "POST",
+      const res = await fetch(`${API_URL}/api/v1/stores/delete?assign_id=${assign_id}`, {
+        method: "GET",
         credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ store_id }),
       });
 
       const data = await res.json();
 
       if (res.ok && !data.errors) {
-        console.log("削除成功");
+        toast("消去成功", { description: "店舗の削除に成功しました" });
       } else {
         const errorMsg = data.errors ? data.errors.join?.(", ") ?? data.errors : "削除失敗";
         toast("削除失敗", {

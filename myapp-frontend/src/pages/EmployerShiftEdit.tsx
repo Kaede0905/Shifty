@@ -69,10 +69,10 @@ const EmployerShiftEdit = () => {
       <div className="p-6 overflow-x-auto">
         {/* 戻るボタン */}
         <button
-          onClick={() => navigate(`/store/${id}/shifts/calender`)}
+          onClick={() => navigate(-1)}
           className="text-blue-600 underline mb-4"
         >
-          ＜ カレンダーに戻る
+          ＜ 戻る
         </button>
 
         <h2 className="text-2xl font-bold mb-6">{date} のシフト編集</h2>

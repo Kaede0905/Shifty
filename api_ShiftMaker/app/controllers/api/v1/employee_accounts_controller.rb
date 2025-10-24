@@ -52,11 +52,43 @@ module Api
         end
       end
 
+      # def authenticated
+      #   user = EmployeeAccount.find_by(id: session[:id])
+      #   if session[:userType] == "employee" && user
+      #     render json: { authenticated: true, user: user }
+      #   else
+      #     render json: { authenticated: false }, status: :unauthorized
+      #   end
+      # end
       def authenticated
         user = EmployeeAccount.find_by(id: session[:id])
+        type = params["type"]
         if session[:userType] == "employee" && user
-          render json: { authenticated: true, user: user }
+          if type == "store"
+            store_id = params["storeId"].to_i
+            employee_assign = EmployeeStoreAssignment.find_by(employee_account_id: user[:id], store_id: store_id)
+            if !employee_assign.nil?
+              userData = {
+                id: user[:id],
+                assign_id: employee_assign[:id],
+                name: user[:name],
+                image_url: user[:image_url],
+                salary: employee_assign[:salary],
+                night_salary: employee_assign[:night_salary],
+                role: employee_assign[:role],
+              }
+              p "成功"
+              render json: { authenticated: true, user: userData }
+            else
+              p "やや失敗"
+              p employee_assign
+              render json: { authenticated: false }, status: :unauthorized
+            end
+          else
+            render json: { authenticated: true, user: user }
+          end
         else
+          p "失敗"
           render json: { authenticated: false }, status: :unauthorized
         end
       end

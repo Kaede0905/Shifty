@@ -9,7 +9,7 @@ interface UserMenuProps {
   setMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const UserMenu: React.FC<UserMenuProps> = ({ menuOpen, setMenuOpen }) => {
+export const EmployerUserMenu: React.FC<UserMenuProps> = ({ menuOpen, setMenuOpen }) => {
   const navigate = useNavigate();
   return (
     <AnimatePresence>

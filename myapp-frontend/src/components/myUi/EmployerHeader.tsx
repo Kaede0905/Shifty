@@ -1,6 +1,6 @@
 // EmployerHeader.tsx
 import { Bell, Store } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
@@ -13,14 +13,14 @@ interface EmployerHeaderProps {
     role: string;
     image_url: string;
   };
-  setMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setStoreModal: React.Dispatch<React.SetStateAction<boolean>>;
+  setUserMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const EmployerHeader: React.FC<EmployerHeaderProps> = ({ employerData, setMenuOpen, setStoreModal }) => {
+export const EmployerHeader: React.FC<EmployerHeaderProps> = ({ employerData, setStoreModal, setUserMenuOpen }) => {
   const navigate = useNavigate();
-
   return (
+    <>
     <header
       className="flex items-center justify-between px-4 sm:px-6 py-3 
                  bg-gradient-to-b from-gray-900 to-gray-800 text-white sticky top-0 z-20"
@@ -29,7 +29,7 @@ export const EmployerHeader: React.FC<EmployerHeaderProps> = ({ employerData, se
       {/* 左側：メニューアイコン & 名前 */}
       <div className="flex items-center gap-3">
         <motion.button
-          onClick={() => setMenuOpen(true)}
+          onClick={() => setUserMenuOpen(true)}
           className="focus:outline-none"
           whileHover={{ scale: 1.1, rotate: 5 }}
           whileTap={{ scale: 0.95 }}
@@ -73,5 +73,6 @@ export const EmployerHeader: React.FC<EmployerHeaderProps> = ({ employerData, se
         </motion.button>
       </div>
     </header>
+    </>
   );
 };

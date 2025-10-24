@@ -84,6 +84,54 @@ module Api
         render json: { users: users }, status: :ok
       end
 
+      def create
+        if session[:userType] == "employer"
+          user_id = session[:id]
+          user = EmployerAccount.find_by(id: user_id)
+
+          unless user
+            render json: { errors: ["ユーザーが見つかりません"] }, status: :not_found
+            return
+          end
+
+          store = Store.new(
+            company_id: user.company_id,
+            name: params[:name],
+            invite_code: SecureRandom.hex(4),
+            address: params[:address].presence || "",
+            phone_number: params[:phone_number].presence || "",
+            status: "active",
+            logo_url: "https://ui-avatars.com/api/?name=#{params[:name]}&background=random",
+            store_type: "with_id"
+          )
+
+          if store.save
+            render json: { message: "店舗を作成しました", store: store }, status: :created
+          else
+            render json: { errors: store.errors.full_messages }, status: :unprocessable_entity
+          end
+
+        else
+          render json: { errors: ["雇用者アカウントではありません"] }, status: :unprocessable_entity
+        end
+      end
+
+      def delete
+        assign_id = params["assign_id"].to_i
+        user_assign = EmployeeStoreAssignment.find_by(id: assign_id)
+        p user_assign
+        store = Store.find_by(id:user_assign[:store_id])
+        if store.nil?
+           render json: { error: "Employee assignment not found" }, status: :not_found
+        end
+        user_assign.destroy!
+        if store.store_type != "with_id"
+          store.destroy!
+        end
+        render json: { message: "Deleted successfully" }, status: :ok
+      end
+
+
       def employee_store_params
         params.require(:employer_store).permit(:mode, :publicId, :name)
       end

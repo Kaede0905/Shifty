@@ -7,6 +7,7 @@ import { UsePullstoreEmployee } from "@/components/fetch/UsePullStoreEmployee";
 import { EmployerHeaderNoStore } from "@/components/myUi/EmployerHeaderNoStore";
 import { useNavigate } from "react-router-dom";
 import { EmployeeDetailModal } from "@/components/myUi/EmployeeDetailModal";
+import { EmployerUserMenu } from "@/components/myUi/EmployerUserMenu";
 
 interface EmployeeData {
   id: number;
@@ -22,6 +23,7 @@ const StoreEmployee: React.FC = () => {
   const [refetchFlag, setRefetchFlag] = useState(0);
   const [selectedEmployee, setSelectedEmployee] = useState<EmployeeData | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [menuUserMenuOpen, setUserMenuOpen] = useState(false);
   const navigate = useNavigate();
   const handleOpenModal = (employee: EmployeeData) => {
     setSelectedEmployee(employee);
@@ -46,7 +48,13 @@ const StoreEmployee: React.FC = () => {
   if (users.length === 0) {
     return (
       <>
-        <EmployerHeaderNoStore />
+        <EmployerHeaderNoStore 
+          setUserMenuOpen={setUserMenuOpen}
+        />
+        <EmployerUserMenu 
+          menuOpen={menuUserMenuOpen}
+          setMenuOpen={setUserMenuOpen}
+        />
         <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-6">
           <h1 className="text-2xl font-bold text-gray-800 mb-4">従業員が登録されていません</h1>
           <p className="text-gray-600 mb-6">この店舗に従業員を追加してください。</p>
@@ -66,7 +74,13 @@ const StoreEmployee: React.FC = () => {
   // 通常の一覧表示
   return (
     <>
-    <EmployerHeaderNoStore />
+    <EmployerHeaderNoStore 
+      setUserMenuOpen={setUserMenuOpen}
+    />
+    <EmployerUserMenu 
+       menuOpen={menuUserMenuOpen}
+      setMenuOpen={setUserMenuOpen}
+    />
     <div className="min-h-screen bg-gray-50 p-6">
       <h1 className="text-2xl font-bold text-gray-800 mb-6">従業員一覧</h1>
 

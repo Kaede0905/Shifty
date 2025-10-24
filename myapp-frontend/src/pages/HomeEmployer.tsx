@@ -4,34 +4,29 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { EmployerHeader } from "@/components/myUi/EmployerHeader";
-import { Store, Users, CalendarDays, Bell, X, CheckCircle, Edit } from "lucide-react";
+import { Store, Users, CalendarDays, X, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import StoreModal from "@/components/myUi/StoreModal";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import dayjs from "dayjs";
 import { UsePullStoreEmployer } from "@/components/fetch/UsePullStoreEmployer";
 import { LoadingScreen } from "@/components/myUi/LoadingScreen";
-
-interface StoreType {
-  id: number;
-  company_id: number;
-  name: string;
-  invite_code: string;
-  address?: string;
-  status?: string;
-  phone_number?: string;
-  logo_url?: string;
-  store_type: string;
-  member?: number
-}
+import { toast } from "sonner";
+import type { StoreType } from "@/components/Type/StoreType";
+import CreateStoreModal from "@/components/myUi/CreateStoreModal";
+import { EmployerUserMenu } from "@/components/myUi/EmployerUserMenu";
+import { EmployerEditStore } from "@/components/myUi/EmployerEditStore";
 
 const HomeEmployer: React.FC = () => {
   const navigate = useNavigate();
-  const [menuOpen, setMenuOpen] = useState(false);
   const [openStoreModal, setStoreModal] = useState(false);
   const [selectedStore, setSelectedStore] = useState<StoreType | null>(null);
+  const [openCreateModal, setCreateModal] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(dayjs());
-  const { stores, user, loading, error } = UsePullStoreEmployer();
+  const [refetchFlag, setRefetchFlag] = useState(0);
+  const [menuUserMenuOpen, setUserMenuOpen] = useState(false);
+  const [editMenuOpen, setEditMenuOpen] = useState(false);
+  const { stores, user, loading, error } = UsePullStoreEmployer(refetchFlag);
   
 
   // ダミーデータのステート
@@ -53,42 +48,51 @@ const HomeEmployer: React.FC = () => {
 
   // ローカルストレージから前回選んだ店舗を復元
   useEffect(() => {
-    const savedStore = localStorage.getItem("selectedStore");
-    if (savedStore) setSelectedStore(JSON.parse(savedStore));
-  }, []);
+  if (!user?.id) return; 
+  const savedStore = localStorage.getItem(`selectedStore_${user.id}`);
+  if (savedStore) setSelectedStore(JSON.parse(savedStore));
+}, [user]);
 
   // 新しく店舗を選んだときに保存
   const handleSelectStore = (store: StoreType) => {
     setSelectedStore(store);
-    localStorage.setItem("selectedStore", JSON.stringify(store));
+    if (user?.id) {
+      localStorage.setItem(`selectedStore_${user.id}`, JSON.stringify(store));
+    }
     setStoreModal(false);
   };
 
   // 店舗削除ボタン
   const handleDeleteStoreBotton = () => {
-    if (!selectedStore) return;
+    if (!selectedStore || !user?.id) return;
+    localStorage.removeItem(`selectedStore_${user.id}`);
     setSelectedStore(null);
+  };
+  const handleCopy = async () => {
+    if (!selectedStore?.invite_code) return;
+    await navigator.clipboard.writeText(selectedStore.invite_code);
+    toast.success("招待コードををコピーしました！");
   };
 
   const menus = [
     { title: "従業員確認", icon: <Users className="w-8 h-8 text-blue-600" />, path: `/store/${selectedStore?.id}/employee/detail` },
     { title: "従業員シフト提出状況", icon: <CalendarDays className="w-8 h-8 text-purple-600" />, path: `/store/${selectedStore?.id}/employee/situation` },
     { title: "シフト編集", icon: <Edit className="w-8 h-8 text-green-600" />, path: `/store/${selectedStore?.id}/shifts/calender` },
+    { title: "会社情報", icon: <Store className="w-8 h-8 text-orange-600" />, path: `/companies/info/${selectedStore?.company_id}`  },
   ];
 
   if (loading) return <LoadingScreen />;
   if (error) return <div>エラー: {error}</div>;
-  console.log(selectedStore)
   return (
     <>
+    <EmployerUserMenu menuOpen={menuUserMenuOpen} setMenuOpen={setUserMenuOpen} />
       <div className="min-h-screen bg-gray-100 flex flex-col">
         {/* ヘッダー */}
         <EmployerHeader
           employerData={user}
-          setMenuOpen={setMenuOpen}
           setStoreModal={setStoreModal}
+          setUserMenuOpen={setUserMenuOpen}
         />
-
         {/* メイン */}
         <main className="flex-1 p-6 flex flex-col">
           {selectedStore ? (
@@ -133,6 +137,14 @@ const HomeEmployer: React.FC = () => {
                           <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-md text-xs font-medium">
                             {selectedStore.invite_code}
                           </span>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={handleCopy}
+                            className="hover:bg-blue-50 hover:text-blue-600 transition"
+                          >
+                            コピー
+                          </Button>
                         </p>
                       )}
                       {"member" in selectedStore && (
@@ -152,7 +164,7 @@ const HomeEmployer: React.FC = () => {
                       variant="outline"
                       size="sm"
                       className="flex items-center gap-1 w-full hover:bg-green-50 hover:text-green-700"
-                      onClick={() => navigate(`/store/${selectedStore.id}/edit`)}
+                      onClick={() => setEditMenuOpen(true)}
                     >
                       <Edit size={16} />
                       編集
@@ -234,13 +246,27 @@ const HomeEmployer: React.FC = () => {
           )}
         </main>
       </div>
-
+      {selectedStore && (
+        <EmployerEditStore
+          editMenuOpen={editMenuOpen}
+          setEditMenuOpen={setEditMenuOpen}
+          store={selectedStore}
+        />
+      )}
       {/* 店舗選択モーダル */}
       <StoreModal
         openStoreModal={openStoreModal}
         setStoreModal={setStoreModal}
+        setCreateModal={setCreateModal}
         stores={stores}
         onSelect={(store) => handleSelectStore(store as StoreType)}
+      />
+      <CreateStoreModal
+        openCreateModal={openCreateModal}
+        setCreateModal={setCreateModal}
+        refetchFlag={refetchFlag}
+        setRefetchFlag={setRefetchFlag}
+        setStoreModal={setStoreModal}
       />
     </>
   );
