@@ -32,6 +32,8 @@ Rails.application.routes.draw do
       get "/stores/:id/employees", to: "stores#employees"
       post "/stores/create", "stores#create"
       get "/stores/delete", to:"stores#delete"
+      patch "/stores/update/:id", to: "stores#update"
+      patch "/stores/update_employee/:id", to: "stores#update_employee"
 
       # シフト
       post "/shift", to: "shift#create"

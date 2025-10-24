@@ -10,7 +10,7 @@ interface Employee {
   night_salary?: number;
   role?: string;
 }
-export const useAuth = (type:string, storeId?: number) => {
+export const useAuth = (type:string, storeId?: number, refetchFlag?: number) => {
 
   const API_URL = import.meta.env.VITE_API_URL;
   const [loading, setLoading] = useState(true);
@@ -39,7 +39,7 @@ export const useAuth = (type:string, storeId?: number) => {
       }
     };
     checkAuth();
-  }, [API_URL, navigate, storeId]);
+  }, [API_URL, navigate, storeId, refetchFlag]);
 
   return { loading, authenticated, user };
 };
