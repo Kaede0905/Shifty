@@ -1,31 +1,53 @@
 import { motion, AnimatePresence } from "framer-motion";
-import type { StoreType } from "../Type/StoreType";
 import { X } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
+type Store = {
+  id: number,
+  company_id: number;
+  name: string;
+  invite_code: string;
+  address?: string;
+  phone_number?: string;
+  status: string;
+  logo_url?: string;
+  store_type?: string;
+};
+
+type Employee ={
+  id: number;
+  assign_id: number;
+  name: string;
+  image_url?: string;
+  salary?: number;
+  night_salary?: number;
+  role?: string;
+}
+
 interface EmployerEditStoreProps {
   editMenuOpen: boolean;
   setEditMenuOpen: (open: boolean) => void;
-  store: StoreType;
-  setSelectedStore: (store: StoreType) => void;
-  id :number;
+  store: Store;
+  user: Employee;
   refetchFlag: number;
   setRefetchFlag: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export const EmployerEditStore = ({
+export const EmployeeEditStore = ({
   editMenuOpen,
   setEditMenuOpen,
   store,
-  setSelectedStore,
-  id,
+  user,
   refetchFlag,
   setRefetchFlag
 }: EmployerEditStoreProps) => {
   const [name, setName] = useState(store.name);
   const [address, setAddress] = useState(store.address ?? "");
   const [phone, setPhone] = useState(store.phone_number ?? "");
+  const [salary, setSalary] = useState(user?.salary);
+  const [night_salary, setNight_salary] = useState(user?.night_salary);
+  const [role, setRole] = useState(user.role ?? "");
   const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault(); // ← フォームの自動リロードを防止
     const API_URL = import.meta.env.VITE_API_URL;
@@ -37,16 +59,20 @@ export const EmployerEditStore = ({
 
     try {
       // ✅ PATCHリクエストで更新
-      const res = await fetch(`${API_URL}/api/v1/stores/update/${store.id}`, {
+      const res = await fetch(`${API_URL}/api/v1/stores/update_employee/${store.id}`, {
         method: "PATCH",
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          assign_id: user.assign_id,
           name: name,
           address: address,
-          phone_number: phone
+          phone_number: phone,
+          salary: salary,
+          night_salary: night_salary,
+          role: role
         }),
       });
 
@@ -55,9 +81,6 @@ export const EmployerEditStore = ({
       if (res.ok) {
         toast.success("店舗を編集しました！");
         setEditMenuOpen(false);
-        const updatedStore = data.store;
-        setSelectedStore(updatedStore); 
-        localStorage.setItem(`selectedStore_${id}`, JSON.stringify(updatedStore));
         setRefetchFlag(refetchFlag + 1)
       } else {
         toast.error("店舗の編集に失敗しました");
@@ -105,33 +128,71 @@ export const EmployerEditStore = ({
 
             {/* ✅ フォーム部分 */}
             <form className="space-y-3">
+              <fieldset disabled={store.store_type === "with_id"}>
+                <div>
+                  <label className="block text-sm text-gray-600">店舗名</label>
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm text-gray-600">住所</label>
+                  <input
+                    type="text"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm text-gray-600">電話番号</label>
+                  <input
+                    type="text"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  />
+                </div>
+              </fieldset>
+              {/* 従業員関連 */}
+              <hr className="my-4" />
+              <h3 className="text-lg font-semibold text-gray-700">従業員設定</h3>
+
               <div>
-                <label className="block text-sm text-gray-600">店舗名</label>
+                <label className="block text-sm text-gray-600">給与（時給）</label>
                 <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  type="number"
+                  value={salary}
+                  onChange={(e) => setSalary(Number(e.target.value))}
                   className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  placeholder="例: 1200"
                 />
               </div>
 
               <div>
-                <label className="block text-sm text-gray-600">住所</label>
+                <label className="block text-sm text-gray-600">夜間給与（時給）</label>
                 <input
-                  type="text"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
+                  type="number"
+                  value={night_salary}
+                  onChange={(e) => setNight_salary(Number(e.target.value))}
                   className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  placeholder="例: 1500"
                 />
               </div>
 
               <div>
-                <label className="block text-sm text-gray-600">電話番号</label>
+                <label className="block text-sm text-gray-600">役職</label>
                 <input
                   type="text"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
                   className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  placeholder="例: 店長 / アルバイト"
                 />
               </div>
 

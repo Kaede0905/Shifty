@@ -12,7 +12,7 @@ type Store = {
   store_type?: string;
 };
 
-export const usePullStoreInfo = () => {
+export const usePullStoreInfo = (refetchFlag?: number) => {
   const API_URL = import.meta.env.VITE_API_URL
   const [stores,setStores] = useState<Store[]>([]);
   useEffect(()=>{
@@ -32,6 +32,6 @@ export const usePullStoreInfo = () => {
       }
     }
     pull();
-  },[]);
+  },[refetchFlag]);
   return { stores, setStores };
 }

@@ -11,13 +11,13 @@ export const DeleteStore = (assign_id: number) => {
 
       const data = await res.json();
 
-      if (res.ok && !data.errors) {
+      if (res.ok && !data.error) {
         toast("消去成功", { description: "店舗の削除に成功しました" });
       } else {
-        const errorMsg = data.errors ? data.errors.join?.(", ") ?? data.errors : "削除失敗";
+        const errorMsg = data.error ? data.error.join?.(", ") ?? data.error : "削除失敗";
         toast("削除失敗", {
           description: errorMsg,
-          action: { label: "閉じる", onClick: () => console.log("閉じる") },
+          action: { label: "閉じる", onClick: () => {} },
         });
       }
     } catch (error: unknown) {

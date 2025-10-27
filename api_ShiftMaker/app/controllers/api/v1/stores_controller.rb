@@ -116,21 +116,107 @@ module Api
         end
       end
 
+      # def delete
+      #   assign_id = params["assign_id"].to_i
+      #   user_assign = EmployeeStoreAssignment.find_by(id: assign_id)
+      #   p user_assign
+      #   store = Store.find_by(id:user_assign[:store_id])
+      #   if store.nil?
+      #      render json: { error: "Employee assignment not found" }, status: :not_found
+      #   end
+      #   user_assign.destroy!
+      #   if store.store_type != "with_id"
+      #     store.destroy!
+      #   end
+      #   render json: { message: "Deleted successfully" }, status: :ok
+      # end
       def delete
         assign_id = params["assign_id"].to_i
         user_assign = EmployeeStoreAssignment.find_by(id: assign_id)
-        p user_assign
-        store = Store.find_by(id:user_assign[:store_id])
+
+        if user_assign.nil?
+          render json: { error: "Employee assignment not found" }, status: :not_found
+          return
+        end
+
+        store = Store.find_by(id: user_assign.store_id)
         if store.nil?
-           render json: { error: "Employee assignment not found" }, status: :not_found
+          render json: { error: "Store not found" }, status: :not_found
+          return
         end
-        user_assign.destroy!
-        if store.store_type != "with_id"
-          store.destroy!
+
+        begin
+          ActiveRecord::Base.transaction do
+            # ✅ まず関連するシフトを削除
+            Shift.where(
+              store_connect_id: user_assign.id,
+              employee_account_id: user_assign.employee_account_id
+            ).destroy_all
+            # ✅ 次にEmployeeStoreAssignmentを削除
+            user_assign.destroy!
+
+            # ✅ store_typeがwith_idでないなら店舗も削除
+            store.destroy! if store.store_type != "with_id"
+          end
+
+          render json: { message: "Deleted successfully" }, status: :ok
+        rescue => e
+          Rails.logger.error("🔥 Store delete failed: #{e.class} - #{e.message}")
+          render json: { error: e.message }, status: :internal_server_error
         end
-        render json: { message: "Deleted successfully" }, status: :ok
       end
 
+
+      def update
+        store = Store.find_by(id: params[:id])
+        if store.nil?
+          render json: { error: "店舗が見つかりません" }, status: :not_found
+          return
+        end
+        logo_url = store.name != params[:name] ? "https://ui-avatars.com/api/?name=#{params[:name]}&background=random" : store.logo_url
+        if store.update(
+            name: params[:name],
+            phone_number: params[:phone_number],
+            address: params[:address],
+            logo_url: logo_url
+          )
+          render json: { message: "店舗情報を更新しました", store: store }, status: :ok
+        else
+          render json: { errors: store.errors.full_messages }, status: :unprocessable_entity
+        end
+      end
+
+      def update_employee
+        store = Store.find_by(id: params[:id])
+        user_assign = EmployeeStoreAssignment.find_by(id: params[:assign_id])
+        if store.nil?
+          render json: { error: "店舗が見つかりません" }, status: :not_found
+          return
+        end
+        if user_assign.nil?
+          render json: { error: "従業員情報が見つかりません" }, status: :not_found
+          return
+        end
+        logo_url = store.name != params[:name] ? "https://ui-avatars.com/api/?name=#{params[:name]}&background=random" : store.logo_url
+        if store.update(
+            name: params[:name],
+            phone_number: params[:phone_number],
+            address: params[:address],
+            logo_url: logo_url
+          )
+          if user_assign.update(
+            salary: params[:salary],
+            night_salary: params[:night_salary],
+            role: params[:role]
+          )
+            render json: { message: "店舗情報を更新しました", store: store }, status: :ok
+          else
+            render json: { errors: store.errors.full_messages }, status: :unprocessable_entity
+          end
+        else
+          render json: { errors: store.errors.full_messages }, status: :unprocessable_entity
+        end
+      end
 
       def employee_store_params
         params.require(:employer_store).permit(:mode, :publicId, :name)

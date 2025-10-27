@@ -48,10 +48,10 @@ const HomeEmployer: React.FC = () => {
 
   // ローカルストレージから前回選んだ店舗を復元
   useEffect(() => {
-  if (!user?.id) return; 
-  const savedStore = localStorage.getItem(`selectedStore_${user.id}`);
-  if (savedStore) setSelectedStore(JSON.parse(savedStore));
-}, [user]);
+    if (!user?.id) return; 
+    const savedStore = localStorage.getItem(`selectedStore_${user.id}`);
+    if (savedStore) setSelectedStore(JSON.parse(savedStore));
+  }, [user]);
 
   // 新しく店舗を選んだときに保存
   const handleSelectStore = (store: StoreType) => {
@@ -246,11 +246,15 @@ const HomeEmployer: React.FC = () => {
           )}
         </main>
       </div>
-      {selectedStore && (
+      {selectedStore && user && (
         <EmployerEditStore
           editMenuOpen={editMenuOpen}
           setEditMenuOpen={setEditMenuOpen}
           store={selectedStore}
+          setSelectedStore={setSelectedStore}
+          id={user.id}
+          refetchFlag={refetchFlag}
+          setRefetchFlag={setRefetchFlag}
         />
       )}
       {/* 店舗選択モーダル */}

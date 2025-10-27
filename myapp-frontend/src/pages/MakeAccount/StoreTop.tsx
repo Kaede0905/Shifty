@@ -12,19 +12,23 @@ import WeekCalendar from "@/components/myUi/WeekShift";
 import { useAuth } from "../../components/fetch/useAuth";
 import { useConfirmDialog } from "@/components/myUi/UseConfirmDialog";
 import { DeleteStore } from "@/components/fetch/DeleteStore";
+import { EmployeeEditStore } from "@/components/myUi/EmployeeEditStore";
 
 const StoreTop = () => {
   const { id } = useParams<{ id: string }>();
-  const { stores } = usePullStoreInfo();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [refetchFlag, setRefetchFlag] = useState(0);
+  const [editMenuOpen, setEditMenuOpen] = useState(false);
+  const { stores } = usePullStoreInfo(refetchFlag);
   const [ConfirmDialog, openConfirm] = useConfirmDialog();
   const navigate = useNavigate();
-  const [menuOpen, setMenuOpen] = useState(false);
+  
   const [userData,setUserData] = useState({
     name: "ゲスト",
     image_url: "https://placehold.co/40x40/999999/FFFFFF?text=U",
   })
   const storeId = Number(id);
-  const { loading, authenticated, user } = useAuth("store", storeId);
+  const { loading, authenticated, user } = useAuth("store", storeId, refetchFlag);
   useEffect(() => {
     if (authenticated && user) {
       setUserData({
@@ -101,7 +105,7 @@ const StoreTop = () => {
               variant="outline"
               size="sm"
               className="flex items-center gap-1 w-full"
-              onClick={() => navigate(`/store/${storeId}/edit`)}
+              onClick={() => setEditMenuOpen(true)}
             >
               <Edit size={16} />
               編集
@@ -169,6 +173,16 @@ const StoreTop = () => {
         <InfoBanner />
     </div>
     {ConfirmDialog}
+    {user && (
+      <EmployeeEditStore
+        editMenuOpen={editMenuOpen}
+        setEditMenuOpen={setEditMenuOpen}
+        store={store}
+        user={user}
+        refetchFlag={refetchFlag}
+        setRefetchFlag={setRefetchFlag}
+      />
+    )}
     </>
   );
 };
