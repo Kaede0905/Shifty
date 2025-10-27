@@ -149,10 +149,9 @@ module Api
           ActiveRecord::Base.transaction do
             # ✅ まず関連するシフトを削除
             Shift.where(
-              store_connect_id: user_assign.store_id,
+              store_connect_id: user_assign.id,
               employee_account_id: user_assign.employee_account_id
             ).destroy_all
-
             # ✅ 次にEmployeeStoreAssignmentを削除
             user_assign.destroy!
 
