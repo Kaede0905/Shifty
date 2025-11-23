@@ -3,22 +3,54 @@
 #
 #   Ensure the SQLite 3 gem is defined in your Gemfile
 #   gem "sqlite3"
-#
+
+
+# default: &default
+#   adapter: sqlite3
+#   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+#   timeout: 5000
+
+# development:
+#   <<: *default
+#   database: storage/development.sqlite3
+
+# test:
+#   <<: *default
+#   database: storage/test.sqlite3
+
+# production:
+#   <<: *default
+
 default: &default
-  adapter: sqlite3
+  adapter: postgresql
+  encoding: unicode
+  host: localhost
+  username: myapp_user
+  password: password
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  timeout: 5000
 
 development:
   <<: *default
-  database: storage/development.sqlite3
+  database: myapp_development
+
+test:
+  <<: *default
+  database: myapp_test
+
+production:
+  <<: *default
+  host: <%= ENV['RDS_HOST'] %>          # AWS RDS のエンドポイント
+  username: <%= ENV['RDS_USERNAME'] %>  # RDS のユーザー名
+  password: <%= ENV['RDS_PASSWORD'] %>  # RDS のパスワード
+  database: <%= ENV['RDS_DBNAME'] %>    # データベース名
+
+
+
+
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
-test:
-  <<: *default
-  database: storage/test.sqlite3
 
 
 # SQLite3 write its data on the local filesystem, as such it requires
@@ -27,6 +59,4 @@ test:
 #
 # Similarly, if you deploy your application as a Docker container, you must
 # ensure the database is located in a persisted volume.
-production:
-  <<: *default
   # database: path/to/persistent/storage/production.sqlite3

@@ -10,7 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_10_16_125155) do
+ActiveRecord::Schema[7.2].define(version: 2025_10_24_202848) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "companies", force: :cascade do |t|
     t.string "name", null: false
     t.string "public_id", null: false
@@ -35,8 +38,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_10_16_125155) do
   end
 
   create_table "employee_store_assignments", force: :cascade do |t|
-    t.integer "employee_account_id", null: false
-    t.integer "store_id"
+    t.bigint "employee_account_id", null: false
+    t.bigint "store_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "store_name"
@@ -50,7 +53,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_10_16_125155) do
   end
 
   create_table "employer_accounts", force: :cascade do |t|
-    t.integer "company_id", null: false
+    t.bigint "company_id", null: false
     t.string "name", null: false
     t.string "email", null: false
     t.string "password_digest", null: false
@@ -64,8 +67,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_10_16_125155) do
   end
 
   create_table "shifts", force: :cascade do |t|
-    t.integer "employee_account_id", null: false
-    t.integer "store_connect_id", null: false
+    t.bigint "employee_account_id", null: false
+    t.bigint "store_connect_id", null: false
     t.date "work_date"
     t.time "start_time"
     t.time "end_time"
@@ -78,12 +81,12 @@ ActiveRecord::Schema[7.2].define(version: 2025_10_16_125155) do
   end
 
   create_table "stores", force: :cascade do |t|
-    t.integer "company_id"
-    t.string "name"
-    t.string "invite_code"
+    t.bigint "company_id"
+    t.string "name", null: false
+    t.string "invite_code", null: false
     t.string "address"
     t.string "phone_number"
-    t.string "status"
+    t.string "status", default: "active"
     t.string "logo_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
