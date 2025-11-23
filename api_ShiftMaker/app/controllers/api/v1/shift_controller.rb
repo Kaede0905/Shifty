@@ -8,12 +8,17 @@ class Api::V1::ShiftController < ApplicationController
       store_id:store_id
     )
     store_connect_id = store_connect.id
-    year = params['year']
-    month = params['month']
+    year = params['year'].to_i
+    month = params['month'].to_i
+
+    start_date = Date.new(year, month, 1)
+    end_date = start_date.end_of_month
+
     Shift.where(
       employee_account_id: user_id,
-      store_connect_id: store_connect_id
-    ).where("strftime('%Y', work_date) = ? AND strftime('%m', work_date) = ?", year.to_s, "%02d" % month).delete_all
+      store_connect_id: store_connect_id,
+      work_date: start_date..end_date
+    ).delete_all
 
     params['shifts'].each do |date, shifts|
       if shifts.present?
@@ -53,13 +58,18 @@ class Api::V1::ShiftController < ApplicationController
       store_id:store_id
     )
     store_connect_id = store_connect.id
-    year = params['year']
-    month = params['month']
+    year = params['year'].to_i
+    month = params['month'].to_i
+
+    start_date = Date.new(year, month, 1)
+    end_date = start_date.end_of_month
+
     saved_shifts = Shift.where(
       employee_account_id: user_id,
       store_connect_id: store_connect_id,
-      status: "saved"
-    ).where("strftime('%Y', work_date) = ? AND strftime('%m', work_date) = ?", year.to_s, "%02d" % month)
+      status: "saved",
+      work_date: start_date..end_date
+    )
     saved_shifts.each do |shift|
       if shift.update(status: "submit")
       else
@@ -74,30 +84,41 @@ class Api::V1::ShiftController < ApplicationController
     user_id = session[:id]
     store_id = params[:store_id].to_i
     store_connect = EmployeeStoreAssignment.find_by(
-      employee_account_id:user_id,
-      store_id:store_id
+      employee_account_id: user_id,
+      store_id: store_id
     )
+    return render json: { error: "Store not found" }, status: :not_found unless store_connect
+
     store_connect_id = store_connect.id
-    year     = params[:year].to_i
-    month    = params[:month].to_i
+    year  = params[:year].to_i
+    month = params[:month].to_i
+
+    # 月初と月末を計算
+    start_date = Date.new(year, month, 1)
+    end_date   = start_date.end_of_month
+
+    # 日付範囲で絞り込む
     shifts = Shift.where(
       employee_account_id: user_id,
-      store_connect_id: store_connect_id
-      )
-              .where("strftime('%Y', work_date) = ? AND strftime('%m', work_date) = ?", year.to_s, month.to_s.rjust(2, '0'))
-    formatted_shifts = shifts.group_by { |s| s.work_date.strftime("%Y/%-m/%-d") }.transform_values do |arr|
+      store_connect_id: store_connect_id,
+      work_date: start_date..end_date
+    )
+
+    # 日付ごとに整形
+    formatted_shifts = shifts.group_by { |s| s.work_date.strftime("%Y/%-m/%-d") }
+                            .transform_values do |arr|
       arr.map do |s|
-      end_hour = s.end_time.hour
-      end_min = s.end_time.min
         {
           start: { h: s.start_time.hour, m: s.start_time.min },
-          end:   { h: end_hour, m: end_min },
+          end:   { h: s.end_time.hour, m: s.end_time.min },
           type:  s.status
         }
       end
     end
+
     render json: formatted_shifts
   end
+
 
   def calender
     user_id = session[:id]
