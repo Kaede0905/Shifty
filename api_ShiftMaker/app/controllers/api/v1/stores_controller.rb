@@ -34,7 +34,11 @@ module Api
           end
         else
           store_name = employee_store_params[:name]
-          store = Store.new(name: store_name, store_type: "without_id")
+          store = Store.new(
+            name: store_name, 
+            store_type: "without_id",
+            invite_code: SecureRandom.hex(6)
+          )
           if store.save
             employee_store_assignment = EmployeeStoreAssignment.new(
               employee_account_id: session[:id],
