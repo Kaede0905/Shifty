@@ -7,6 +7,7 @@
 #   end
 # end
 # lib/omniauth/strategies/line.rb
+module Omniauth; end   # ← これを追加
 module OmniAuth
   module Strategies
     class Line < OmniAuth::Strategies::OAuth2
