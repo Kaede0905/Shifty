@@ -13,19 +13,13 @@
 # lib/omniauth/strategies/line.rb
 
 # OmniAuth モジュール宣言（Rails が読み込む順序の問題に備えて一応書いておく）
-module OmniAuth; end
-
 module OmniAuth
   module Strategies
     class Line < OmniAuth::Strategies::OAuth2
-
-      # scope を authorize_params として許可
       option :authorize_params, %i[scope]
 
-      # authorize_params を拡張
       def authorize_params
         super.tap do |params|
-          # POST の hidden フィールド "mode" を拾う
           extra = request.params.slice("mode")
           params[:state] = extra.to_json if extra.present?
         end
@@ -33,4 +27,5 @@ module OmniAuth
     end
   end
 end
+
 
