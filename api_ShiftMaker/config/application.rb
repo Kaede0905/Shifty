@@ -28,6 +28,10 @@ module ApiShiftMaker
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
 
+    config.eager_load_paths << Rails.root.join("lib")
+    config.autoload_paths << Rails.root.join("lib")
+
+
     config.api_only = true
 
     # API-only モードでもセッションと Cookie を使えるようにする
