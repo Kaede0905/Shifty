@@ -6,7 +6,9 @@ const MakeEmployeeShift = () => {
   const { id } = useParams<{ id: string }>();
   const { stores } = usePullStoreInfo();
   const storeId = Number(id);
-  const store = stores.find((s) => s.id === storeId);
+  // const store = stores.find((s) => s.id === storeId);
+  type Store = { id: number; name: string; store_type: string };
+  const store = stores.find((s) => s.id === storeId) as Store | undefined;
 
   if (!store) return <h1>店舗が見つかりません</h1>;
 

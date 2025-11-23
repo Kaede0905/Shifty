@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { EmployerHeaderNoStore } from "@/components/myUi/EmployerHeaderNoStore";
+// import { EmployerHeaderNoStore } from "@/components/myUi/EmployerHeaderNoStore";
 import { LoadingScreen } from "@/components/myUi/LoadingScreen";
 import { UsePullShiftEmployer } from "@/components/fetch/UsePullShiftEmployer";
 import { ShiftEditModal } from "@/components/myUi/ShiftEditModal";
@@ -64,7 +64,7 @@ const EmployerShiftEdit = () => {
   return (
     <>
       <InfoBanner />
-      <EmployerHeaderNoStore />
+      {/* <EmployerHeaderNoStore setUserMenuOpen={setUserMenuOpen} /> */}
 
       <div className="p-6 overflow-x-auto">
         {/* 戻るボタン */}

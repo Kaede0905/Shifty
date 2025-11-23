@@ -8,5 +8,6 @@ interface ImportMetaEnv {
 
 interface ImportMeta {
   readonly env: ImportMetaEnv;
+  readonly url: string; // ← これを追加
 }
 

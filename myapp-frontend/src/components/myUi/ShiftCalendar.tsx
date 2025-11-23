@@ -153,14 +153,14 @@ export default function ShiftCalendar({ store }: Props) {
 
     // 終了を選択したら範囲確定
     setSelectEnd({ date, cell });
-    const newRange: Range = { 
-      start: selectStart.cell, 
-      end: cell
-    };
-    setShifts((prev) => ({
-      ...prev,
-      [date]: [...(prev[date] || []), newRange],
-    }));
+    // const newRange: Range = { 
+    //   start: selectStart.cell, 
+    //   end: cell
+    // };
+    // setShifts((prev) => ({
+    //   ...prev,
+    //   [date]: [...(prev[date] || []), newRange],
+    // }));
 
     setSelectStart(null);
     setSelectEnd(null);

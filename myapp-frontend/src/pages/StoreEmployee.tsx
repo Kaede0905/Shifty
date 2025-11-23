@@ -25,10 +25,10 @@ const StoreEmployee: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [menuUserMenuOpen, setUserMenuOpen] = useState(false);
   const navigate = useNavigate();
-  const handleOpenModal = (employee: EmployeeData) => {
-    setSelectedEmployee(employee);
-    setModalOpen(true);
-  };
+  // const handleOpenModal = (employee: EmployeeData) => {
+  //   setSelectedEmployee(employee);
+  //   setModalOpen(true);
+  // };
   const handleCloseModal = () => {
     setModalOpen(false);
     setSelectedEmployee(null);
