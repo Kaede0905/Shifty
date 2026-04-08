@@ -27,7 +27,14 @@
 # config/initializers/cors.rb
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins "*"  # 後でReactのURLに変更
+    if Rails.env.production?
+      # 本番環境ではフロントの Render URL を指定
+      origins "https://shifty-frontend.onrender.com"
+    else
+      # 開発環境は localhost
+      origins "http://localhost:5173"
+    end
+
     resource "*",
       headers: :any,
       methods: [:get, :post, :put, :patch, :delete, :options, :head],
