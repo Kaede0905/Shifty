@@ -8,7 +8,7 @@
 # end
 # lib/omniauth/strategies/line.rb
 # lib/omniauth/strategies/line.rb
-module OmniAuth
+module Omniauth
   module Strategies
     class Line < OmniAuth::Strategies::OAuth2
       option :authorize_params, %i[scope]
