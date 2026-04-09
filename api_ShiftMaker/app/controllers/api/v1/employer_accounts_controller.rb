@@ -26,7 +26,7 @@ module Api
 
       private
       def employer_params
-        params.require(:employer_account).permit(:name, :email, :password, :role, :company_public_id)
+        params.permit(:name, :email, :password, :role, :company_public_id)
       end
     end
   end

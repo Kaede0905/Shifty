@@ -219,7 +219,7 @@ module Api
       end
 
       def employee_store_params
-        params.require(:employer_store).permit(:mode, :publicId, :name)
+        params.permit(:mode, :publicId, :name)
       end
     end
   end

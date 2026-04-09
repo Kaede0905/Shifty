@@ -123,7 +123,7 @@ module Api
 
       private
       def account_params
-        params.require(:employee_account).permit(:name, :age, :gender, :email, :password, :type, :public_id)
+        params.permit(:name, :age, :gender, :email, :password, :type, :public_id)
       end
       
     end
