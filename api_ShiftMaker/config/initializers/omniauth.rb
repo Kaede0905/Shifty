@@ -4,6 +4,7 @@
 # if Rails.env.development?
 #   OmniAuth.config.allowed_request_methods = [:get, :post]
 # end
+OmniAuth.config.silence_get_warning = true
 OmniAuth.config.allowed_request_methods = [:get, :post]
 OmniAuth.config.request_validation_phase = nil
 
