@@ -1,4 +1,4 @@
-class Api::V1::ShiftController < ApplicationController
+class Api::V1::ShiftController < Api::V1::BaseController
   def create
     results = []
     user_id = session[:id]

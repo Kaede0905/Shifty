@@ -1,6 +1,6 @@
 module Api
   module V1
-    class StoresController < ApplicationController
+    class StoresController < Api::V1::BaseController
       def employee_create
         mode = employee_store_params[:mode]
         if mode == "withId"
@@ -219,7 +219,7 @@ module Api
       end
 
       def employee_store_params
-        params.permit(:mode, :publicId, :name)
+        params.require(:employer_store).permit(:mode, :publicId, :name)
       end
     end
   end

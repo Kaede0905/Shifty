@@ -1,6 +1,6 @@
 module Api
   module V1
-    class EmployeeAccountsController < ApplicationController
+    class EmployeeAccountsController < Api::V1::BaseController
 
       def create
         user = EmployeeAccount.new(
@@ -123,7 +123,7 @@ module Api
 
       private
       def account_params
-        params.permit(:name, :age, :gender, :email, :password, :type, :public_id)
+        params.require(:employee_account).permit(:name, :age, :gender, :email, :password, :type, :public_id)
       end
       
     end

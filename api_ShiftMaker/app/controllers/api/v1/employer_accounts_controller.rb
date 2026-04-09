@@ -1,6 +1,6 @@
 module Api
   module V1
-    class Api::V1::EmployerAccountsController < ApplicationController
+    class EmployerAccountsController < Api::V1::BaseController
 
       def create
         company = Company.find_by(public_id: employer_params[:company_public_id])
@@ -26,7 +26,7 @@ module Api
 
       private
       def employer_params
-        params.permit(:name, :email, :password, :role, :company_public_id)
+        params.require(:employer_account).permit(:name, :email, :password, :role, :company_public_id)
       end
     end
   end

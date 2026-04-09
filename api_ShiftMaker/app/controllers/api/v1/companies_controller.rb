@@ -1,4 +1,4 @@
-class Api::V1::CompaniesController < ApplicationController
+class Api::V1::CompaniesController < Api::V1::BaseController
   def create
     company = Company.new(company_params)
     company.public_id ||= SecureRandom.hex(4)
