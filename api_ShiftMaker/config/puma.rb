@@ -34,23 +34,26 @@
 # # In other environments, only set the PID file if requested.
 # pidfile ENV["PIDFILE"] if ENV["PIDFILE"]
 # Puma threads
+# Puma configuration file
+
+# スレッド数設定
 threads_count = ENV.fetch("RAILS_MAX_THREADS", 5)
 threads threads_count, threads_count
 
-# Puma port
+# ポート設定（RenderはPORT環境変数を使う）
 port ENV.fetch("PORT", 3000)
 
-# Single-mode worker (Renderではクラスタは不要)
+# Renderは基本シングルプロセスでOK
 workers 0
 
-# Preload app (optional for dev/prod memory optimization)
+# アプリを事前ロード（メモリ効率改善）
 preload_app!
 
-# Allow puma restart via `bin/rails restart`
+# 再起動を許可
 plugin :tmp_restart
 
-# PID file (optional)
+# PIDファイル（必要な場合のみ）
 pidfile ENV["PIDFILE"] if ENV["PIDFILE"]
 
-# Optional: silence single-worker warning
-silence_single_worker_warning true
+# Puma 7対応（ここ重要）
+silence_single_worker_warning

@@ -1,15 +1,14 @@
 import { useState,useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import dayjs from "dayjs";
-import { SuccessDialogExample } from "./SuccessDialogExample";
 import { PullShiftsEmployee } from "../fetch/PullShiftEmployee";
 import { LoadingScreen } from "./LoadingScreen";
 
-interface Shift {
-  day: string;
-  time: string[] | null; // 複数シフトに対応
-  confirmed: boolean;
-}
+// interface Shift {
+//   day: string;
+//   time: string[] | null; // 複数シフトに対応
+//   confirmed: boolean;
+// }
 type WeekShiftProps = {
   storeId: number;
   sundayDate: string;
@@ -26,15 +25,15 @@ const WeekShift: React.FC<WeekShiftProps> = ({
 
   const [currentSunday, setCurrentSunday] = useState(sundayDate);
   const [currentSaturday, setCurrentSaturday] = useState(saturdayDate);
-  const sampleShifts: Shift[] = [
-    { day: "日", time: ["13:00 - 19:00"], confirmed: true },
-    { day: "月", time: ["9:00 - 12:00", "14:00 - 17:00"], confirmed: true },
-    { day: "火", time: ["10:00 - 18:00"], confirmed: false },
-    { day: "水", time: null, confirmed: false },
-    { day: "木", time: ["12:00 - 14:00", "15:00 - 20:00"], confirmed: true },
-    { day: "金", time: ["9:00 - 15:00"], confirmed: false },
-    { day: "土", time: null, confirmed: false },
-  ];
+  // const sampleShifts: Shift[] = [
+  //   { day: "日", time: ["13:00 - 19:00"], confirmed: true },
+  //   { day: "月", time: ["9:00 - 12:00", "14:00 - 17:00"], confirmed: true },
+  //   { day: "火", time: ["10:00 - 18:00"], confirmed: false },
+  //   { day: "水", time: null, confirmed: false },
+  //   { day: "木", time: ["12:00 - 14:00", "15:00 - 20:00"], confirmed: true },
+  //   { day: "金", time: ["9:00 - 15:00"], confirmed: false },
+  //   { day: "土", time: null, confirmed: false },
+  // ];
   const [weekOffset, setWeekOffset] = useState(0);
   const [prevOffset, setPrevOffset] = useState(0);
   useEffect(() => {
@@ -46,8 +45,8 @@ const WeekShift: React.FC<WeekShiftProps> = ({
   
   const startOfWeek = dayjs().startOf("week").add(weekOffset, "week");
   const endOfWeek = startOfWeek.add(6, "day");
-  const datestart = startOfWeek.date();
-  const { shifts, setShifts, loading, error } = PullShiftsEmployee(storeId, currentSunday, currentSaturday);
+  // const datestart = startOfWeek.date();
+  const { shifts, loading, error } = PullShiftsEmployee(storeId, currentSunday, currentSaturday);
     if (loading) return <LoadingScreen />;
     if (error) return <div>エラー: {error}</div>;
   

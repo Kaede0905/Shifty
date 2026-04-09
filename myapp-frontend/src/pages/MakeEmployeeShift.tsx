@@ -12,7 +12,12 @@ const MakeEmployeeShift = () => {
 
   return (
     <div>
-      <ShiftCalendar store={store} />
+      <ShiftCalendar
+        store={{
+          ...store,
+          store_type: store.store_type ?? "", // undefined の場合は空文字に
+        }}
+      />
     </div>
   );
 };

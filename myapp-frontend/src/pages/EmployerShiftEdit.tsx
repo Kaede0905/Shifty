@@ -64,7 +64,7 @@ const EmployerShiftEdit = () => {
   return (
     <>
       <InfoBanner />
-      <EmployerHeaderNoStore />
+      <EmployerHeaderNoStore setUserMenuOpen={() => {}} />
 
       <div className="p-6 overflow-x-auto">
         {/* 戻るボタン */}

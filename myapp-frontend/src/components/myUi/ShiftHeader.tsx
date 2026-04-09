@@ -1,5 +1,3 @@
-import React from "react";
-
 type Props = {
   storeName: string;
   tab: "morning" | "day" | "night";
