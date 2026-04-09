@@ -2,10 +2,6 @@
 module Api
   module V1
     class BaseController < ActionController::API
-      include ActionController::Cookies  # sessionを使う
-
-      # CSRFはスキップ（APIでは通常不要）
-      skip_forgery_protection
     end
   end
 end
