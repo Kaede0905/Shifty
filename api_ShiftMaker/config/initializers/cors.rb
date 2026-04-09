@@ -29,7 +29,7 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
     if Rails.env.production?
       # 本番環境ではフロントの Render URL を指定
-      origins "https://shifty-frontend.onrender.com"
+      origins "https://shifty-api-46aa.onrender.com"
     else
       # 開発環境は localhost
       origins "http://localhost:5173"
