@@ -1,8 +1,10 @@
 module Api
   module V1
     class BaseController < ActionController::API
-      # API用なのでCSRFを無効化
-      protect_from_forgery with: :null_session
+      include ActionController::Cookies
+
+      # セッション使うAPI向けに null_session を設定
+      before_action :verify_authenticity_token, raise: false
     end
   end
 end
