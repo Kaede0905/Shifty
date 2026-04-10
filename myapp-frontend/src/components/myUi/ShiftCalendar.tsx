@@ -23,7 +23,7 @@ const TABS: Record<string, [number, number]> = {
 };
 
 type Cell = { h: number; m: number };
-type Range = { start: Cell; end: Cell; type: "unsaved" | "saved" | "submit" | "approved" | "rejected" ; };
+type Range = { start: Cell; end: Cell; type: "unsaved" | "saved" | "submit" | "approved" | "rejected"};
 
 const getWeekday = (year: number, month: number, day: number) => {
   const d = new Date(year, month - 1, day);
@@ -155,7 +155,7 @@ export default function ShiftCalendar({ store }: Props) {
     setSelectEnd({ date, cell });
     const newRange: Range = { 
       start: selectStart.cell, 
-      end: cell,
+      end: cell, 
       type: "unsaved",
     };
     setShifts((prev) => ({
