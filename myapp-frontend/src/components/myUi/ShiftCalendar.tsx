@@ -158,10 +158,23 @@ export default function ShiftCalendar({ store }: Props) {
       end: cell, 
       type: "unsaved",
     };
-    setShifts((prev) => ({
-      ...prev,
-      [date]: [...(prev[date] || []), newRange],
-    }));
+    setShifts((prev) => {
+      const existing = prev[date] || [];
+
+      const newStart = getIndex(newRange.start);
+      const newEnd   = getIndex(newRange.end);
+
+      const filtered = existing.filter((r) => {
+        const s = getIndex(r.start);
+        const e = getIndex(r.end);
+        return e < newStart || s > newEnd; // 重なってないものだけ残す
+      });
+
+      return {
+        ...prev,
+        [date]: [...filtered, newRange],
+      };
+    });
 
     setSelectStart(null);
     setSelectEnd(null);
