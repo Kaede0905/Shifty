@@ -13,7 +13,7 @@ class Api::V1::ShiftController < Api::V1::BaseController
     Shift.where(
       employee_account_id: user_id,
       store_connect_id: store_connect_id
-    ).where("strftime('%Y', work_date) = ? AND strftime('%m', work_date) = ?", year.to_s, "%02d" % month).delete_all
+    ).where("EXTRACT(YEAR FROM work_date) = ? AND EXTRACT(MONTH FROM work_date) = ?", year.to_i, month.to_i).delete_all
 
     params['shifts'].each do |date, shifts|
       if shifts.present?
@@ -59,7 +59,7 @@ class Api::V1::ShiftController < Api::V1::BaseController
       employee_account_id: user_id,
       store_connect_id: store_connect_id,
       status: "saved"
-    ).where("strftime('%Y', work_date) = ? AND strftime('%m', work_date) = ?", year.to_s, "%02d" % month)
+    ).where("EXTRACT(YEAR FROM work_date) = ? AND EXTRACT(MONTH FROM work_date) = ?", year.to_i, month.to_i)
     saved_shifts.each do |shift|
       if shift.update(status: "submit")
       else
@@ -83,8 +83,8 @@ class Api::V1::ShiftController < Api::V1::BaseController
     shifts = Shift.where(
       employee_account_id: user_id,
       store_connect_id: store_connect_id
-      )
-              .where("strftime('%Y', work_date) = ? AND strftime('%m', work_date) = ?", year.to_s, month.to_s.rjust(2, '0'))
+    ).where("EXTRACT(YEAR FROM work_date) = ? AND EXTRACT(MONTH FROM work_date) = ?", year.to_i, month.to_i)
+
     formatted_shifts = shifts.group_by { |s| s.work_date.strftime("%Y/%-m/%-d") }.transform_values do |arr|
       arr.map do |s|
       end_hour = s.end_time.hour
