@@ -250,6 +250,21 @@ export default function ShiftCalendar({ store }: Props) {
   const handleSave = async() => {
     const result = await openConfirm("保存しますか？",`${year}年${month}月のデータのみ保存します。`);
     if (!result) return;
+
+    // --- ここから追加 ---
+    // 送信用に、type: "unsaved" のものを "saved" に書き換えた新しいデータを作成します
+    const shiftsToSave = Object.fromEntries(
+      Object.entries(shifts).map(([date, ranges]) => [
+        date,
+        ranges.map((r) => ({
+          ...r,
+          // もし "unsaved" だったら "saved" に変更。それ以外（提出済み等）はそのまま。
+          type: r.type === "unsaved" ? "saved" : r.type,
+        })),
+      ])
+    );
+    // --- ここまで追加 ---
+
     try{
       const res = await fetch(`${API_URL}/api/v1/shift`, { 
         method: "POST", 
@@ -259,7 +274,7 @@ export default function ShiftCalendar({ store }: Props) {
           store_id: store.id,
           year: year,
           month: month,
-          shifts: shifts
+          shifts: shiftsToSave // ← ここを shifts から shiftsToSave に変更
         })
       })
       const data = await res.json();
