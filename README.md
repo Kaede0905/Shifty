@@ -3,32 +3,33 @@
 ## 概要
 
 Shiftyは、飲食店におけるシフト管理業務の効率化を目指して開発されたシフト管理アプリケーションです。
-アルバイトのシフト確定までに3週間を要していたという現場特有の課題を特定し、業務プロセスのデジタル化と最適化により、わずか1週間へと大幅に短縮することに成功しました。
+アルバイトのシフト確定までに3週間を要していたという店舗の現場課題を特定し、その業務プロセスをわずか1週間へと大幅に短縮することに成功しました。
 
-### 構成概要
+## 特徴
 
-* **Hosting**: Render (Web Service)
+* **現場主導の要件定義**: 単なる機能実装にとどまらず、現場のスタッフやマネージャーとのヒアリングを通じて「業務がなぜ遅れているのか」という根本的な課題を抽出しました。
 
-* **Database**: PostgreSQL (Render Database)
+* **効率化の実現**: 従来の煩雑なシフト調整プロセスをデジタル化・最適化し、管理者の事務負担を大幅に削減します。
 
+* **データベース設計の刷新**: 当初は小規模な設計でしたが、より汎用性を高めるためにリレーション構造を多対多のモデルへ根底から見直しました。これと共にデプロイ時にデータベースをSQLiteからPostgreSQLへと移行しています。
 
 ### システム構成図
 
+システムの主要なデータフローは以下の通りです。
+
 ```mermaid
 graph TD
-    Client[React / TypeScript] -->|API Request| API[Rails API Server]
-    
-    subgraph "Server Side (Render)"
-        API --> Auth[Devise Auth]
-        API --> Logic[Shift Generation/Validation]
-        API --> AC[ActionCable / WebSockets]
+    subgraph "Client Side"
+        React[React / TypeScript]
     end
-    
-    subgraph "Background & Cache"
-        AC <--> Redis[(Render Redis)]
-        Logic --> Sidekiq[Sidekiq / Async Tasks]
+
+    subgraph "Server Side"
+        Rails[Ruby on Rails API]
     end
-    
+
     subgraph "Data Layer"
-        Logic --> DB[(Render PostgreSQL)]
+        PostgreSQL[(PostgreSQL)]
     end
+
+    React -->|API Request| Rails
+    Rails -->|Read/Write| PostgreSQL
